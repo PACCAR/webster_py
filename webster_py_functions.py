@@ -61,12 +61,6 @@ def count_unique(vector):
 # Add summary stats
 #
 # Adds summary stats to the dictionary
-#   Unique levels   
-#   NA count        X
-#   Mean            X
-#   SD              X
-#   Min/Max         X
-#   Head            
 #
 # @param dataset The dataset for summary stats
 #
