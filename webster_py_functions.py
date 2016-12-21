@@ -133,18 +133,3 @@ def compile_dictionary(dataset, autosave = False):
 
 
 
-
-
-#' Apply data dictionary to dataset
-#'
-#' Applies typing and filtering rules from a data dictionary to a dataset
-#'
-#' @param data Dataset to be processed
-#' @param dictionary.path Filepath to the data dictionary to be enforced
-#' @param enforce.keep When enforce.keep = TRUE (Default), filters out columns with a "keep" value of FALSE in the dictionary
-#'
-#' @return data Data frame with dictionary rules applied
-#'
-#' @export
-# enforce_dictionary
-
