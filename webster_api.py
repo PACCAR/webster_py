@@ -5,6 +5,7 @@
 # Python libraries
 import pandas as pd
 from flask import Flask, request, abort, jsonify
+import json
 
 # webster_py library
 import webster_py_functions as webster
@@ -28,7 +29,8 @@ def make_dictionary():
     # output = webster.compile_dictionary(dataset= df)
     #output = df
     #print(output)
-    return jsonify(results="hi")
+    #return jsonify(results="hi")
+    return(data)
 
 if __name__ == '__main__':
     app.run(port = 9000, debug = True)
