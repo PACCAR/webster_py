@@ -1,30 +1,7 @@
 # Webster Functions
 
 import pandas as pd
-
-
-
-
-
-#### Sample dataset ####
-# Import dataset
-dataset = pd.read_csv("./Data/sample.csv")
-
-# Get types
-dictionary = get_feature_types(dataset = dataset)
-# Decorate
-dictionary = decorate_dictionary(dictionary= dictionary)
-# Add summary_stats
-stats = get_stats(dataset= dataset)
-
-
-# Write CSV
-dictionary.to_csv("./Dictionary.csv") 
-
-
-
-
-
+import numpy as np
 
 
 
@@ -104,14 +81,16 @@ def get_stats(dataset):
     summary_stats = dataset.apply(count_unique)
     summary_stats = summary_stats.to_frame(name = 'unique_levels')
     
-    summary_stats = summary_stats.join(num_stats)
-    
+    summary_stats = summary_stats.merge(num_stats, how = 'outer', left_index=True, right_index=True)
     
     # Get NA counts
     na_count = dataset.shape[0] - dataset.count()
     na_count = na_count.to_frame(name = 'na_count')
     
-    summary_stats = summary_stats.join(na_count)
+    summary_stats = na_count.join(summary_stats)
+    
+    # Fill in blanks with NaNs
+    summary_stats = summary_stats.replace('', np.NaN)
     
     # Extract index
     summary_stats = summary_stats.reset_index()
@@ -119,7 +98,6 @@ def get_stats(dataset):
     return(summary_stats);
 
 
-zz = get_stats(dataset= dataset)
 
 
 
@@ -137,7 +115,22 @@ zz = get_stats(dataset= dataset)
 #' my.dictionary <- websteR::compile_dictionary(iris)
 #'
 #' @export
-# compile_dictionary
+def compile_dictionary(dataset, autosave = False):
+    # Get types
+    dictionary = get_feature_types(dataset = dataset)
+    # Decorate
+    dictionary = decorate_dictionary(dictionary= dictionary)
+    # Add summary_stats
+    stats = get_stats(dataset= dataset)
+    dictionary = dictionary.set_index('index').join(stats.set_index('index'))
+    dictionary.reset_index()
+
+    # Write CSV if autosave = true
+    if autosave == True:
+        dictionary.to_csv("./Dictionary.csv", na_rep="NaN")
+    
+    return(dictionary);
+
 
 
 
@@ -154,3 +147,4 @@ zz = get_stats(dataset= dataset)
 #'
 #' @export
 # enforce_dictionary
+
