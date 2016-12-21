@@ -96,17 +96,30 @@ def count_unique(vector):
 # @return dataset.stats Data frame of summary statistics
 def get_stats(dataset):
     
-    summary_stats = dataset.describe()
-    summary_stats = summary_stats.transpose().reset_index()
-    summary_stats['na_count'] = dataset.shape[0] - summary_stats['count']
-    
+    num_stats = dataset.describe()
+    num_stats = num_stats.transpose()
+    num_stats.drop('count', axis = 1, inplace = True)
+
     # Get unique level counts
-    dataset.apply(count_unique)
+    summary_stats = dataset.apply(count_unique)
+    summary_stats = summary_stats.to_frame(name = 'unique_levels')
+    
+    summary_stats = summary_stats.join(num_stats)
+    
+    
+    # Get NA counts
+    na_count = dataset.shape[0] - dataset.count()
+    na_count = na_count.to_frame(name = 'na_count')
+    
+    summary_stats = summary_stats.join(na_count)
+    
+    # Extract index
+    summary_stats = summary_stats.reset_index()
     
     return(summary_stats);
 
 
-
+zz = get_stats(dataset= dataset)
 
 
 
