@@ -1,0 +1,143 @@
+# Webster Functions
+
+import pandas as pd
+
+
+
+
+
+#### Sample dataset ####
+# Import dataset
+dataset = pd.read_csv("./Data/sample.csv")
+
+# Get types
+dictionary = get_feature_types(dataset = dataset)
+# Decorate
+dictionary = decorate_dictionary(dictionary= dictionary)
+# Add summary_stats
+stats = get_stats(dataset= dataset)
+
+
+# Write CSV
+dictionary.to_csv("./Dictionary.csv") 
+
+
+
+
+
+
+
+
+
+
+
+# Extract classes from all columns of a data frame
+#
+# This function will extract the column classes from a data frame, returning a new data frame.
+#
+# @param dataset A data frame of the data for which we are building a dictionary.
+# @return types A dataframe listing column names and their respective classes.
+def get_feature_types(dataset):
+    # Generate a data frame of column names and types
+    feature_types = dataset.dtypes
+    feature_types = feature_types.to_frame(name = 'type').reset_index()
+    return(feature_types);
+
+
+
+
+
+
+# Decorate the bare dicionary
+#
+# Adds decorators to the barebones dictionary. Adds Keep, Description, Notes columns
+#
+# @param dictionary A bare dictionary, in dataframe format, including column names and classes
+#
+# @return dictionary Decorated dictionary
+def decorate_dictionary(dictionary):
+    dictionary['keep'] = True
+    dictionary['description'] = ""
+    dictionary['notes'] = ""
+    
+    return(dictionary);
+
+
+
+
+
+
+# Count unique levels
+#
+# Counts all unique values in a series, used in  the summary_stats function
+#
+# @param vector The input series
+#
+# @return count_unique A number, representing the count of unique levels
+def count_unique(vector):
+
+    count_unique = len(list(set(vector)))
+    return(count_unique);
+
+
+
+# Add summary stats
+#
+# Adds summary stats to the dictionary
+#   Unique levels   
+#   NA count        X
+#   Mean            X
+#   SD              X
+#   Min/Max         X
+#   Head            
+#
+# @param dataset The dataset for summary stats
+#
+# @return dataset.stats Data frame of summary statistics
+def get_stats(dataset):
+    
+    summary_stats = dataset.describe()
+    summary_stats = summary_stats.transpose().reset_index()
+    summary_stats['na_count'] = dataset.shape[0] - summary_stats['count']
+    
+    # Get unique level counts
+    dataset.apply(count_unique)
+    
+    return(summary_stats);
+
+
+
+
+
+
+#' Compile a data dictionary for a data frame
+#'
+#' Compiles a data dictionary for a data frame input
+#'
+#' @param dataset The dataframe to generate the dictionary
+#' @param name The filename for the dictionary
+#' @param path The filepath to locate the dictionary
+#'
+#' @return dict.temp The dictionary dataframe (Note: Not returned, the function will save the csv dictionary to the desired path)
+#'
+#' @examples
+#' my.dictionary <- websteR::compile_dictionary(iris)
+#'
+#' @export
+# compile_dictionary
+
+
+
+
+#' Apply data dictionary to dataset
+#'
+#' Applies typing and filtering rules from a data dictionary to a dataset
+#'
+#' @param data Dataset to be processed
+#' @param dictionary.path Filepath to the data dictionary to be enforced
+#' @param enforce.keep When enforce.keep = TRUE (Default), filters out columns with a "keep" value of FALSE in the dictionary
+#'
+#' @return data Data frame with dictionary rules applied
+#'
+#' @export
+# enforce_dictionary
