@@ -120,7 +120,6 @@ def compile_dictionary(dataset, autosave = False):
     dictionary = dictionary.reset_index()
     
     # Set column types
-    # df[['col2','col3']] = df[['col2','col3']].apply(pd.to_numeric)
     dictionary[['type']] = dictionary[['type']].astype('str')
 
     # Write CSV if autosave = true
