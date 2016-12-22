@@ -33,7 +33,7 @@ def get_feature_types(dataset):
 #
 # @return dictionary Decorated dictionary
 def decorate_dictionary(dictionary):
-    dictionary['keep'] = True
+    dictionary['keep'] = "True"
     dictionary['description'] = ""
     dictionary['notes'] = ""
     
