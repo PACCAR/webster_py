@@ -117,13 +117,18 @@ def compile_dictionary(dataset, autosave = False):
     # Add summary_stats
     stats = get_stats(dataset= dataset)
     dictionary = dictionary.set_index('index').join(stats.set_index('index'))
-    dictionary.reset_index()
+    dictionary = dictionary.reset_index()
+    
+    # Set column types
+    # df[['col2','col3']] = df[['col2','col3']].apply(pd.to_numeric)
+    dictionary[['type']] = dictionary[['type']].astype('str')
 
     # Write CSV if autosave = true
     if autosave == True:
         dictionary.to_csv("./Dictionary.csv", na_rep="NaN")
     
     return(dictionary);
+
 
 
 
